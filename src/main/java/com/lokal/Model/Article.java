@@ -1,22 +1,24 @@
 package com.lokal.Model;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "articles")
 public class Article {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String header;
+    private String title;
     private String data;
-    private String author;
-    private Date lastUpdated;
 
     public Article() {
     }
 
-    public Article(String header, String data, String author, Date lastUpdated) {
-        this.header = header;
+    public Article(String title, String data) {
+        this.title = title;
         this.data = data;
-        this.author = author;
-        this.lastUpdated = lastUpdated;
     }
 
     public Integer getId() {
@@ -27,12 +29,12 @@ public class Article {
         this.id = id;
     }
 
-    public String getHeader() {
-        return header;
+    public String getTitle() {
+        return title;
     }
 
-    public void setHeader(String header) {
-        this.header = header;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getData() {
@@ -41,21 +43,5 @@ public class Article {
 
     public void setData(String data) {
         this.data = data;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
     }
 }

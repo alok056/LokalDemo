@@ -1,7 +1,12 @@
 package com.lokal;
 
+import com.lokal.Model.Article;
 import com.lokal.api.ArticleResource;
+import com.lokal.core.ArticleService;
+import com.lokal.dao.ArticleDao;
 import io.dropwizard.Application;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.hibernate.validator.internal.util.logging.Log;
@@ -20,9 +25,17 @@ public class LokalDemoApplication extends Application<LokalDemoConfiguration> {
         return "LokalDemo";
     }
 
+    private final HibernateBundle<LokalDemoConfiguration> hibernate = new HibernateBundle<LokalDemoConfiguration>(Article.class) {
+        @Override
+        public DataSourceFactory getDataSourceFactory(LokalDemoConfiguration configuration) {
+            return configuration.getDataSourceFactory();
+        }
+    };
+
     @Override
     public void initialize(final Bootstrap<LokalDemoConfiguration> bootstrap) {
         // TODO: application initialization
+        bootstrap.addBundle(hibernate);
     }
 
     @Override
@@ -32,7 +45,9 @@ public class LokalDemoApplication extends Application<LokalDemoConfiguration> {
         DateFormat eventDateFormat = new SimpleDateFormat(configuration.getDateFormat());
         environment.getObjectMapper().setDateFormat(eventDateFormat);
 
-        ArticleResource articleResource = new ArticleResource();
+        final ArticleDao articleDao = new ArticleDao(hibernate.getSessionFactory());
+        final ArticleService articleService = new ArticleService(articleDao);
+        ArticleResource articleResource = new ArticleResource(articleService);
         environment.jersey().register(articleResource);
 
     }
