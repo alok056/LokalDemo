@@ -12,4 +12,8 @@ public class ArticleDao extends AbstractDAO<Article> {
     public Article createorUpdate(Article article) {
         return persist(article);
     }
+
+    public Article getArticle(Integer id) {
+        return get(id);
+    }
 }
