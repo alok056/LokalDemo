@@ -12,7 +12,7 @@ public class AuthorDao extends AbstractDAO<Author> {
         super(sessionFactory);
     }
 
-    public Author getLocation(Integer id) {
+    public Author getAuthor(Integer id) {
         return get(id);
     }
 

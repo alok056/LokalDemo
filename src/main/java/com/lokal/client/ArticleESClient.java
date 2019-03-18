@@ -1,5 +1,6 @@
 package com.lokal.client;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import com.lokal.Model.Article;
@@ -35,6 +36,7 @@ public class ArticleESClient {
 
     public ArticleESClient(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         restClient = RestClient.builder(
                 new HttpHost("localhost", 9200, "http"),
@@ -64,7 +66,21 @@ public class ArticleESClient {
         return responseBody;
     }
 
-    public Map<Object, Object> indexObject(ArticleBO article) {
+    public Map<Object, Object> indexObject(ArticleBO article) throws IOException {
+        Request request = new Request(
+                "PUT",
+                "/lokal/articles/" + article.getArticle().getId());
+
+        request.addParameter("pretty", "true");
+        request.setEntity(new NStringEntity(objectMapper.writeValueAsString(article), ContentType.APPLICATION_JSON));
+
+        Response response = restClient.performRequest(request);
+
+        RequestLine requestLine = response.getRequestLine();
+        HttpHost host = response.getHost();
+        int statusCode = response.getStatusLine().getStatusCode();
+        Header[] headers = response.getHeaders();
+        String responseBody = EntityUtils.toString(response.getEntity());
 
         return Maps.newHashMap();
     }

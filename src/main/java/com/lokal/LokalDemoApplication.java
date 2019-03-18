@@ -2,6 +2,9 @@ package com.lokal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lokal.Model.Article;
+import com.lokal.Model.Author;
+import com.lokal.Model.Location;
+import com.lokal.Model.Tag;
 import com.lokal.api.ArticleResource;
 import com.lokal.client.ArticleESClient;
 import com.lokal.core.ArticleService;
@@ -11,8 +14,6 @@ import com.lokal.dao.LocationDao;
 import com.lokal.dao.TagDao;
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
-import io.dropwizard.elasticsearch.config.EsConfiguration;
-import io.dropwizard.elasticsearch.managed.ManagedEsClient;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -33,7 +34,7 @@ public class LokalDemoApplication extends Application<LokalDemoConfiguration> {
         return "LokalDemo";
     }
 
-    private final HibernateBundle<LokalDemoConfiguration> hibernate = new HibernateBundle<LokalDemoConfiguration>(Article.class) {
+    private final HibernateBundle<LokalDemoConfiguration> hibernate = new HibernateBundle<LokalDemoConfiguration>(Article.class, Author.class, Tag.class, Location.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(LokalDemoConfiguration configuration) {
             return configuration.getDataSourceFactory();
